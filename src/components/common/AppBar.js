@@ -45,12 +45,7 @@ class HeaderAppBar extends Component {
     auth: true,
     anchorEl: null,
   };
-
-  handleLogin = () => {
-    const account = this.props.store.account
-    account.isLoggedIn() == 0 ? account.login() : account.logout()
-  }
-
+  
   handleMenu = event => {
     const account = this.props.store.account
     if (account.isLoggedIn()) {
@@ -111,12 +106,12 @@ class HeaderAppBar extends Component {
               </div>
             ) :
               <div>
-                <Button onClick={this.handleLogin}>
+                <Button component={Link} to="/login">
                   Login
                 </Button>
-                <Button variant="contained" color="primary" onClick={this.handleLogin}>
+                <Button variant="contained" color="primary" component={Link} to="/signup">
                   Register
-                  </Button>
+                </Button>
               </div>
             }
           </Toolbar>
@@ -128,10 +123,10 @@ class HeaderAppBar extends Component {
 
 function LoggedInMenu() {
   return <div>
-    <Button component={Link} to="/Pricing">
+    <Button component={Link} to="/pricing">
       Pricing
     </Button>
-    <Button component={Link} to="/Profile">
+    <Button component={Link} to="/profile">
       Profile
     </Button>
   </div>
@@ -139,7 +134,7 @@ function LoggedInMenu() {
 
 function LoggedOutMenu() {
   return <div>
-    <Button component={Link} to="/Pricing">
+    <Button component={Link} to="/pricing">
       Pricing
     </Button>
   </div>

@@ -109,10 +109,10 @@ function Home(props) {
               <Hidden xsDown>
                 <Grid item md={6}>
                   <div className={classes.mainFeaturedPostContent}>
-                    <Typography component="h1" variant="h3" color="black" gutterBottom>
+                    <Typography component="h1" variant="h3" color="textPrimary" gutterBottom>
                       E-Commerce Made Easy. Sit back, relax and scratch.
                   </Typography>
-                    <Typography variant="h5" color="black" paragraph>
+                    <Typography variant="h5" color="textPrimary" paragraph>
                       Multiple lines of text that form the lede, informing new readers quickly and
                       efficiently about what&apos;s most interesting in this post&apos;s contents…
                   </Typography>

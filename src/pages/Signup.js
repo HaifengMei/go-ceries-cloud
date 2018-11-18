@@ -54,7 +54,7 @@ class Signup extends Component {
 
     state = {
         password: '',
-        email:'',
+        confirmpassword: '',
         showPassword: false,
         openSB: false,
         SNmessage: '',
@@ -69,8 +69,12 @@ class Signup extends Component {
     };
 
     handleSubmit = event => {
-        const { email, password } = this.state;
-        alert(email+' '+password)
+        const { password, confirmpassword } = this.state;
+        if (password.length > 0 && password != confirmpassword) {
+            this.setState({ openSB: true, SBmessage: 'Password does not match' })
+        }else{
+            this.setState({ openSB: false})
+        }
         event.preventDefault();
 
     }
@@ -82,7 +86,7 @@ class Signup extends Component {
 
     render() {
         const { classes } = this.props;
-        const { password, showPassword, openSB, SBmessage, email } = this.state;
+        const { password, confirmpassword, showPassword, openSB, SBmessage } = this.state;
         return (
             <main className={classes.main}>
                 <CssBaseline />
@@ -91,15 +95,12 @@ class Signup extends Component {
                         <LockIcon />
                     </Avatar>
                     <Typography component="h1" variant="h5">
-                        Sign In
+                        Sign Up
                 </Typography>
                     <form className={classes.form} onSubmit={this.handleSubmit}>
                         <FormControl margin="normal" required fullWidth>
                             <InputLabel htmlFor="email">Email Address</InputLabel>
-                            <Input id="email" name="email" value={email} 
-                                onChange={this.handleChange('email')} autoFocus 
-                                autoComplete="email"
-                            />
+                            <Input id="email" name="email" autoFocus />
                         </FormControl>
                         <FormControl margin="normal" required fullWidth>
                             <InputLabel htmlFor="password">Password</InputLabel>
@@ -108,7 +109,25 @@ class Signup extends Component {
                                 type={showPassword ? 'text' : 'password'}
                                 value={password}
                                 onChange={this.handleChange('password')}
-                                autoComplete="current-password"
+                                endAdornment={
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="Toggle password visibility"
+                                            onClick={this.handleClickShowPassword}
+                                        >
+                                            {showPassword ? <Visibility /> : <VisibilityOff />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                }
+                            />
+                        </FormControl>
+                        <FormControl margin="normal" required fullWidth>
+                            <InputLabel htmlFor="confirmpassword">Confirm Password</InputLabel>
+                            <Input
+                                id="confirmpassword"
+                                type={showPassword ? 'text' : 'password'}
+                                value={confirmpassword}
+                                onChange={this.handleChange('confirmpassword')}
                                 endAdornment={
                                     <InputAdornment position="end">
                                         <IconButton
@@ -128,7 +147,7 @@ class Signup extends Component {
                             color="primary"
                             className={classes.submit}
                         >
-                            Submit
+                            onSubmit
                         </Button>
                     </form>
                 </Paper>
