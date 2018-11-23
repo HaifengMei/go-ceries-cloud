@@ -15,9 +15,9 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import { observer } from 'mobx-react'
-import Loading from '../components/common/Loading'
 import UserStore from '../stores/UserStore'
 import UIStore from '../stores/UIStore'
+import LoaderButton from '../components/common/LoaderButton';
 
 const styles = theme => ({
     main: {
@@ -58,9 +58,6 @@ class Login extends Component {
         password: '',
         email: '',
         showPassword: false,
-        openSB: false,
-        SNmessage: '',
-        loading: false,
     };
 
     handleChange = prop => event => {
@@ -74,18 +71,13 @@ class Login extends Component {
     handleSubmit = async e => {
         e.preventDefault()
         const { email, password } = this.state
-
         await UserStore.login(email, password, this.props.history) 
     }
 
     render() {
         const { classes } = this.props;
-        const { loading } = UIStore
+        const { loading, loadingSuccess } = UIStore
         const { password, showPassword, email } = this.state;
-
-        if (loading) {
-            return <Loading />
-        }
 
         return (
             <main className={classes.main}>
@@ -125,7 +117,7 @@ class Login extends Component {
                                 }
                             />
                         </FormControl>
-                        <Button
+                        {/* <Button
                             disabled={loading}
                             type="submit"
                             fullWidth
@@ -134,7 +126,16 @@ class Login extends Component {
                             className={classes.submit}
                         >
                             Submit
-                        </Button>
+                        </Button> */}
+                        <LoaderButton
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            loading={loading}
+                            title={loading? 'Loggin in..' : 'Submit'}
+                            className={classes.submit}
+                            fullWidth={true}
+                        />
                     </form>
                 </Paper>
             </main>

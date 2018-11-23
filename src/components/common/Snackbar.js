@@ -10,12 +10,12 @@ const styles = theme => ({
   close: {
     padding: theme.spacing.unit / 2,
   },
+  
 });
 
 class SimpleSnackbar extends React.Component {
   render() {
-    const { classes, message, open=false, autoHideDuration=null, onClose=null, handleClose} = this.props;
-    console.log(this.props)
+    const { classes, message, open=false, autoHideDuration=null, handleClose} = this.props;
     return (
       <div>
         <Snackbar
@@ -25,7 +25,7 @@ class SimpleSnackbar extends React.Component {
           }}
           open={open}
           autoHideDuration={autoHideDuration}
-          onClose={onClose}
+          onClose={handleClose}
           TransitionComponent={Fade}
           ContentProps={{
             'aria-describedby': 'message-id',
