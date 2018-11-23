@@ -15,6 +15,7 @@ const styles = theme => ({
 class SimpleSnackbar extends React.Component {
   render() {
     const { classes, message, open=false, autoHideDuration=null, onClose=null, handleClose} = this.props;
+    console.log(this.props)
     return (
       <div>
         <Snackbar

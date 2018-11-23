@@ -10,10 +10,11 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import Switch from '@material-ui/core/Switch';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
-import { observer, inject } from 'mobx-react'
+import { observer } from 'mobx-react'
 import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom'
 import CssBaseline from '@material-ui/core/CssBaseline';
+import UserStore from '../../stores/UserStore'
 
 const styles = theme => ({
   '@global': {
@@ -37,7 +38,6 @@ const styles = theme => ({
   }
 });
 
-@inject('store')
 @observer
 class HeaderAppBar extends Component {
 
@@ -45,10 +45,9 @@ class HeaderAppBar extends Component {
     auth: true,
     anchorEl: null,
   };
-  
+
   handleMenu = event => {
-    const account = this.props.store.account
-    if (account.isLoggedIn()) {
+    if (UserStore.isLoggedIn()) {
       this.setState({ anchorEl: event.currentTarget });
     }
   };
@@ -61,8 +60,7 @@ class HeaderAppBar extends Component {
     const { classes } = this.props;
     const { anchorEl } = this.state;
     const open = Boolean(anchorEl);
-    const store = this.props.store;
-    const auth = store.account.isLoggedIn()
+    const auth = UserStore.isLoggedIn()
 
     return (
       <React.Fragment>
@@ -72,7 +70,7 @@ class HeaderAppBar extends Component {
             <Typography variant="h6" color="primary" className={classes.toolbarTitle}>
               <Link className={classes.link} to="/">Go-Ceries</Link>
             </Typography>
-            {store.account.isLoggedIn()
+            {auth
               ? <LoggedInMenu />
               : <LoggedOutMenu />}
             {auth ? (
