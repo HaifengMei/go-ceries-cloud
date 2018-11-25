@@ -2,6 +2,7 @@ import Home from '../pages/Home'
 import Pricing from '../pages/Pricing'
 import Login from '../pages/Login'
 import Signup from '../pages/Signup'
+import Profile from '../pages/Profile/'
 
 export default [
   {
@@ -19,5 +20,9 @@ export default [
   {
     path: '/signup',
     component: Signup
+  },
+  {
+    path: '/profile',
+    component: Profile
   },
 ]

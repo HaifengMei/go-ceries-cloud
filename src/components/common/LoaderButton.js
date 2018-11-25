@@ -11,6 +11,7 @@ const styles = theme => ({
         alignItems: 'center',
     },
     wrapper: {
+        margin: theme.spacing.unit,
         width:'100%',
         position: 'relative',
     },
@@ -19,7 +20,7 @@ const styles = theme => ({
         position: 'absolute',
         top: '50%',
         left: '50%',
-        marginTop: -12,
+        marginTop: -2,
         marginLeft: -12,
     },
 });

@@ -9,9 +9,11 @@ export default class Notification extends Component {
         UIStore.closeSnackBar()
     }
     render() {
-        const { open, message, variant, autoHideDuration } = UIStore.snackbar;
+        const { message, variant, autoHideDuration } = UIStore.snackbar;
         return (
-            <SnackBar open={open} message={message} autoHideDuration={autoHideDuration} variant={variant} handleClose={this.handleClose} />
+            <div>
+                <SnackBar open={UIStore.snackbar.open} message={message} autoHideDuration={autoHideDuration} variant={variant} handleClose={this.handleClose} />
+            </div>
         )
     }
 }
