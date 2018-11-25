@@ -7,9 +7,37 @@ class UIStore {
         open: false,
         message: null,
         autoHideDuration: null,
+        specialAction: null
     }
 
-    @action openSnackBar(message, autoHideDuration) {
+    @observable dialog = {
+        open: false,
+        title: null,
+        confirmText: 'confirm',
+        closeAction: null,
+        children: null
+    }
+
+    @action openDialog(title = null, confirmText = 'confirm', closeAction = null, children = null) {
+        this.dialog = {
+            open: true,
+            title: title,
+            confirmText: confirmText,
+            closeAction: closeAction,
+            children: children
+        }
+    }
+
+    @action closeDialog = () => {
+        this.dialog = {
+            open: false,
+            title: '',
+            confirmText: 'confirm',
+            children: null
+        }
+    }
+
+    @action openSnackBar(message = null, autoHideDuration = null) {
         this.snackbar = {
             open: true,
             message: message,

@@ -1,22 +1,24 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import FormControl from '@material-ui/core/FormControl';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormGroup from '@material-ui/core/FormGroup';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import LockIcon from '@material-ui/icons/LockOutlined';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
-import TextField from '@material-ui/core/TextField';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import IconButton from '@material-ui/core/IconButton';
-import classNames from 'classnames';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import SnackBar from '../components/common/Snackbar';
+import { observer } from 'mobx-react'
+import UserStore from '../stores/UserStore'
+import LoaderButton from '../components/common/LoaderButton';
+import UIStore from '../stores/UIStore';
 
 const styles = theme => ({
     main: {
@@ -50,14 +52,16 @@ const styles = theme => ({
     },
 });
 
+@observer
 class Signup extends Component {
 
     state = {
         password: '',
         confirmpassword: '',
         showPassword: false,
-        openSB: false,
-        SNmessage: '',
+        email: "",
+        confirmationCode: "",
+        newUser: null,
     };
 
     handleChange = prop => event => {
@@ -68,25 +72,134 @@ class Signup extends Component {
         this.setState(state => ({ showPassword: !state.showPassword }));
     };
 
-    handleSubmit = event => {
-        const { password, confirmpassword } = this.state;
-        if (password.length > 0 && password != confirmpassword) {
-            this.setState({ openSB: true, SBmessage: 'Password does not match' })
-        }else{
-            this.setState({ openSB: false})
-        }
+    handleConfirmationSubmit = async event => {
         event.preventDefault();
-
+        const { email, password, confirmationCode } = this.state
+        await UserStore.confirmSubmit(email, password, confirmationCode, this.props.history)
     }
 
-    closeSB = () => {
-        this.setState({ openSB: false, SBmessage: '' })
+    handleSubmit = async event => {
+        event.preventDefault();
+        const { email, password } = this.state
+        const newUser = await UserStore.signup(email, password)
+        if (newUser) {
+            this.setState({
+                newUser
+            });
+        }
     }
 
+
+
+
+    validateForm() {
+        return (
+            this.state.email.length > 0 &&
+            this.state.password.length > 0 &&
+            this.state.password === this.state.confirmPassword
+        );
+    }
+
+    validateConfirmationForm() {
+        return this.state.confirmationCode.length > 0;
+    }
+
+    renderConfirmationForm() {
+        const { classes } = this.props;
+        const { confirmationCode } = this.state;
+        const { loading } = UIStore;
+        
+        return (
+            <form className={classes.form} onSubmit={this.handleConfirmationSubmit}>
+                <FormGroup>
+                    <FormControl margin="normal" required fullWidth>
+                        <InputLabel htmlFor="tel">Confirmation Code</InputLabel>
+                        <Input id="confirmationCode" name="confirmationCode" value={confirmationCode} autoFocus
+                            value={confirmationCode}
+                            onChange={this.handleChange('confirmationCode')} />
+                    </FormControl>
+                    <FormHelperText>Please check your email for the code.</FormHelperText>
+                </FormGroup>
+                <LoaderButton
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    loading={loading}
+                    disabled={!this.validateConfirmationForm()}
+                    title={loading ? 'Verifying...' : 'Verify'}
+                    className={classes.submit}
+                    fullWidth={true}
+                />
+            </form>
+        );
+    }
+
+    renderForm() {
+        const { classes } = this.props;
+        const { password, confirmpassword, showPassword, email, loading } = this.state;
+        return (
+
+            <form className={classes.form} onSubmit={this.handleSubmit}>
+                <FormControl margin="normal" required fullWidth>
+                    <InputLabel htmlFor="email">Email Address</InputLabel>
+                    <Input id="email" name="email" value={email} autoFocus onChange={this.handleChange('email')} />
+                </FormControl>
+                <FormControl margin="normal" required fullWidth>
+                    <InputLabel htmlFor="password">Password</InputLabel>
+                    <Input
+                        id="password"
+                        type={showPassword ? 'text' : 'password'}
+                        value={password}
+                        onChange={this.handleChange('password')}
+                        endAdornment={
+                            <InputAdornment position="end">
+                                <IconButton
+                                    aria-label="Toggle password visibility"
+                                    onClick={this.handleClickShowPassword}
+                                >
+                                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                                </IconButton>
+                            </InputAdornment>
+                        }
+                    />
+                </FormControl>
+                <FormControl margin="normal" required fullWidth>
+                    <InputLabel htmlFor="confirmpassword">Confirm Password</InputLabel>
+                    <Input
+                        id="confirmpassword"
+                        type={showPassword ? 'text' : 'password'}
+                        value={confirmpassword}
+                        onChange={this.handleChange('confirmpassword')}
+                        endAdornment={
+                            <InputAdornment position="end">
+                                <IconButton
+                                    aria-label="Toggle password visibility"
+                                    onClick={this.handleClickShowPassword}
+                                >
+                                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                                </IconButton>
+                            </InputAdornment>
+                        }
+                    />
+                </FormControl>
+                <LoaderButton
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    loading={loading}
+                    disabled={!this.validateForm()}
+                    title={loading ? 'Signing up..' : 'Submit'}
+                    className={classes.submit}
+                    fullWidth={true}
+                />
+            </form>
+
+        )
+    }
 
     render() {
         const { classes } = this.props;
-        const { password, confirmpassword, showPassword, openSB, SBmessage } = this.state;
+
         return (
             <main className={classes.main}>
                 <CssBaseline />
@@ -97,61 +210,10 @@ class Signup extends Component {
                     <Typography component="h1" variant="h5">
                         Sign Up
                 </Typography>
-                    <form className={classes.form} onSubmit={this.handleSubmit}>
-                        <FormControl margin="normal" required fullWidth>
-                            <InputLabel htmlFor="email">Email Address</InputLabel>
-                            <Input id="email" name="email" autoFocus />
-                        </FormControl>
-                        <FormControl margin="normal" required fullWidth>
-                            <InputLabel htmlFor="password">Password</InputLabel>
-                            <Input
-                                id="password"
-                                type={showPassword ? 'text' : 'password'}
-                                value={password}
-                                onChange={this.handleChange('password')}
-                                endAdornment={
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            aria-label="Toggle password visibility"
-                                            onClick={this.handleClickShowPassword}
-                                        >
-                                            {showPassword ? <Visibility /> : <VisibilityOff />}
-                                        </IconButton>
-                                    </InputAdornment>
-                                }
-                            />
-                        </FormControl>
-                        <FormControl margin="normal" required fullWidth>
-                            <InputLabel htmlFor="confirmpassword">Confirm Password</InputLabel>
-                            <Input
-                                id="confirmpassword"
-                                type={showPassword ? 'text' : 'password'}
-                                value={confirmpassword}
-                                onChange={this.handleChange('confirmpassword')}
-                                endAdornment={
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            aria-label="Toggle password visibility"
-                                            onClick={this.handleClickShowPassword}
-                                        >
-                                            {showPassword ? <Visibility /> : <VisibilityOff />}
-                                        </IconButton>
-                                    </InputAdornment>
-                                }
-                            />
-                        </FormControl>
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            className={classes.submit}
-                        >
-                            onSubmit
-                        </Button>
-                    </form>
+                    {this.state.newUser === null
+                        ? this.renderForm()
+                        : this.renderConfirmationForm()}
                 </Paper>
-                <SnackBar open={openSB} handleClose={this.closeSB} message={SBmessage} />
             </main>
         )
     }

@@ -41,10 +41,8 @@ class HeaderAppBar extends Component {
     anchorEl: null,
   };
 
-  handleMenu = event => {
-    if (UserStore.isLoggedIn()) {
-      this.setState({ anchorEl: event.currentTarget });
-    }
+  handleClick = event => {
+    this.setState({ anchorEl: event.currentTarget });
   };
 
   handleClose = () => {
@@ -55,12 +53,15 @@ class HeaderAppBar extends Component {
     UserStore.logout(this.props.history)
   }
 
+  handleProfile = () => {
+    this.setState({ anchorEl: null });
+    this.props.history.push("/profile")
+  }
+
   render() {
     const { classes } = this.props;
     const { anchorEl } = this.state;
-    const open = Boolean(anchorEl);
     const auth = UserStore.isLoggedIn()
-
     return (
       <React.Fragment>
         <CssBaseline />
@@ -75,9 +76,9 @@ class HeaderAppBar extends Component {
             {auth ? (
               <div>
                 <IconButton
-                  aria-owns={open ? 'menu-appbar' : undefined}
+                  aria-owns={anchorEl ? 'menu-appbar' : undefined}
                   aria-haspopup="true"
-                  onClick={this.handleMenu}
+                  onClick={this.handleClick}
                   color="inherit"
                 >
                   <AccountCircle />
@@ -85,12 +86,10 @@ class HeaderAppBar extends Component {
                 <Menu
                   id="menu-appbar"
                   anchorEl={anchorEl}
-          
-                  open={open}
+                  open={Boolean(anchorEl)}
                   onClose={this.handleClose}
                 >
-                  <MenuItem onClick={this.handleClose}>Profile</MenuItem>
-                  <MenuItem onClick={this.handleClose}>My account</MenuItem>
+                  <MenuItem onClick={this.handleProfile}>My Account</MenuItem>
                   <MenuItem onClick={this.handleLogout}>Logout</MenuItem>
                 </Menu>
               </div>
@@ -113,9 +112,6 @@ class HeaderAppBar extends Component {
 
 function LoggedInMenu() {
   return <div>
-    <Button component={Link} to="/pricing">
-      Pricing
-    </Button>
     <Button component={Link} to="/profile">
       Profile
     </Button>

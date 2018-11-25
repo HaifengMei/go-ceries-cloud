@@ -7,13 +7,18 @@ const styles = theme => ({
   progress: {
     margin: theme.spacing.unit * 2,
   },
+
+  center: {
+    margin: 'auto',
+    textAlign: 'center'
+  }
 });
 
 function CircularIndeterminate(props) {
   const { classes } = props;
   return (
-    <div>
-      <CircularProgress className={classes.progress} />
+    <div className={classes.center}>
+      <CircularProgress size={68} className={classes.progress} />
     </div>
   );
 }
