@@ -3,21 +3,24 @@ import '../assets/css/App.css';
 import Index from '../pages/Index';
 import routes from '../config/routes'
 import { BrowserRouter } from "react-router-dom";
-import state from '../stores/State'
-import createContext from '../config/context'
-import autorun from '../config/autorun'
-const context = createContext(state)
+import UserStore from '../stores/UserStore';
+import { observer } from 'mobx-react';
 
-// React to changes
-autorun(context)
-
+@observer
 class App extends Component {
+
+  async componentDidMount() {
+    await UserStore.authenticate()
+  }
+
   render() {
     return (
       <BrowserRouter>
-        <Index {...context} >
-          {routes}
-        </Index>
+        {!UserStore.isAuthenticating &&
+          <Index>
+            {routes}
+          </Index>
+        }
       </BrowserRouter>
     );
   }

@@ -10,13 +10,14 @@ import LockIcon from '@material-ui/icons/LockOutlined';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
-import TextField from '@material-ui/core/TextField';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import IconButton from '@material-ui/core/IconButton';
-import classNames from 'classnames';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import SnackBar from '../components/common/Snackbar';
+import { observer } from 'mobx-react'
+import UserStore from '../stores/UserStore'
+import UIStore from '../stores/UIStore'
+import LoaderButton from '../components/common/LoaderButton';
 
 const styles = theme => ({
     main: {
@@ -50,14 +51,13 @@ const styles = theme => ({
     },
 });
 
-class Signup extends Component {
+@observer
+class Login extends Component {
 
     state = {
         password: '',
-        email:'',
+        email: '',
         showPassword: false,
-        openSB: false,
-        SNmessage: '',
     };
 
     handleChange = prop => event => {
@@ -68,21 +68,17 @@ class Signup extends Component {
         this.setState(state => ({ showPassword: !state.showPassword }));
     };
 
-    handleSubmit = event => {
-        const { email, password } = this.state;
-        alert(email+' '+password)
-        event.preventDefault();
-
+    handleSubmit = async e => {
+        e.preventDefault()
+        const { email, password } = this.state
+        await UserStore.login(email, password, this.props.history) 
     }
-
-    closeSB = () => {
-        this.setState({ openSB: false, SBmessage: '' })
-    }
-
 
     render() {
         const { classes } = this.props;
-        const { password, showPassword, openSB, SBmessage, email } = this.state;
+        const { loading, loadingSuccess } = UIStore
+        const { password, showPassword, email } = this.state;
+
         return (
             <main className={classes.main}>
                 <CssBaseline />
@@ -96,8 +92,8 @@ class Signup extends Component {
                     <form className={classes.form} onSubmit={this.handleSubmit}>
                         <FormControl margin="normal" required fullWidth>
                             <InputLabel htmlFor="email">Email Address</InputLabel>
-                            <Input id="email" name="email" value={email} 
-                                onChange={this.handleChange('email')} autoFocus 
+                            <Input id="email" name="email" value={email}
+                                onChange={this.handleChange('email')} autoFocus
                                 autoComplete="email"
                             />
                         </FormControl>
@@ -121,7 +117,8 @@ class Signup extends Component {
                                 }
                             />
                         </FormControl>
-                        <Button
+                        {/* <Button
+                            disabled={loading}
                             type="submit"
                             fullWidth
                             variant="contained"
@@ -129,17 +126,25 @@ class Signup extends Component {
                             className={classes.submit}
                         >
                             Submit
-                        </Button>
+                        </Button> */}
+                        <LoaderButton
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            loading={loading}
+                            title={loading? 'Loggin in..' : 'Submit'}
+                            className={classes.submit}
+                            fullWidth={true}
+                        />
                     </form>
                 </Paper>
-                <SnackBar open={openSB} handleClose={this.closeSB} message={SBmessage} />
             </main>
         )
     }
 }
 
-Signup.propTypes = {
+Login.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Signup);
+export default withStyles(styles)(Login);

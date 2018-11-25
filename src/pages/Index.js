@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types'
 import { Switch, Route } from 'react-router-dom'
 import { Provider } from 'mobx-react'
 import routes from '../config/routes'
 import AppBar from '../components/common/AppBar'
 import NotFound from './NotFound'
 import Footer from '../components/common/Footer'
+import Notification from '../components/common/Notification'
+
 
 class Index extends Component {
   render() {
@@ -20,16 +21,12 @@ class Index extends Component {
             })}
             <Route component={NotFound} />
           </Switch>
+          <Notification />
           <Footer />
         </div>
       </Provider>
     )
   }
-}
-
-Index.propTypes = {
-  store: PropTypes.object.isRequired,
-  state: PropTypes.object.isRequired,
 }
 
 export default Index
