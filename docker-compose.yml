@@ -1,9 +1,8 @@
 version: '3.5'
 
 services:
-
-  production:
-    container_name: go-ceries-web-prod
+  app:
+    image: hmei/go-ceries-cloud_app
     build:
       context: .
       dockerfile: Dockerfile

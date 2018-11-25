@@ -1,0 +1,6 @@
+web:
+  image: hmei/go-ceries-cloud_app
+  cpu_shares: 100
+  mem_limit: 262144000
+  ports:
+    - "80:80"
